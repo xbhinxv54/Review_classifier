@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Review Classifier</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460, #e94560);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #ffffff;
+        }
+        h1 {
+            text-align: center;
+            color: #e94560; /* Neon pink for the heading */
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        }
+        textarea {
+            width: 100%;
+            max-width: 600px;
+            height: 150px;
+            padding: 10px;
+            border: 2px solid #00adb5; /* Neon teal border */
+            border-radius: 5px;
+            font-size: 16px;
+            resize: none;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            background-color: rgba(255, 255, 255, 0.1); /* Slightly transparent white */
+            color: #ffffff; /* Text color */
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #00adb5; /* Neon teal */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #007b7f; /* Darker teal on hover */
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #ffffff;
+            max-width: 600px;
+            text-align: center;
+        }
+        .error {
+            color: #ff4d4d; /* Red for errors */
+        }
+    </style>
+</head>
+<body>
+    <h1>Fake Review Classifier</h1>
+    <textarea id="reviewText" placeholder="Paste your review text here..."></textarea>
+    <button onclick="getPrediction()">Get Prediction</button>
+    <div class="result" id="result"></div>
+
+    <script>
+        async function getPrediction() {
+            const text = document.getElementById('reviewText').value;
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: text })
+            });
+
+            const data = await response.json();
+            const resultDiv = document.getElementById('result');
+
+            if (response.ok) {
+                resultDiv.innerHTML = `Prediction: ${data.prediction}`;
+                resultDiv.classList.remove('error');
+            } else {
+                resultDiv.innerHTML = `Error: ${data.error}`;
+                resultDiv.classList.add('error');
+            }
+        }
+    </script>
+</body>
+</html>
